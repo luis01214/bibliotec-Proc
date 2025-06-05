@@ -1,9 +1,17 @@
 package src.biblioteca.gui;
 
 import javax.swing.*;
+import javax.swing.table.DefaultTableModel;
 import java.awt.*;
+import java.util.List;
+import src.biblioteca.dao.PrestamoDAO;
+import src.biblioteca.model.Prestamo;
 
 public class VentanaBiblioteca extends JFrame {
+
+    private JTable tablaPrestamos;
+    private DefaultTableModel modeloTabla;
+    private PrestamoDAO prestamoDAO = new PrestamoDAO();
 
     public VentanaBiblioteca() {
         setTitle("BIBLIOTEC");
@@ -38,7 +46,7 @@ public class VentanaBiblioteca extends JFrame {
             boton.setMaximumSize(new Dimension(140, 40));
             boton.setFocusPainted(false);
             if (i == 0) {
-                boton.setBackground(new Color(255, 204, 153)); // solo el primero naranja claro
+                boton.setBackground(new Color(255, 204, 153));
             } else {
                 boton.setBackground(new Color(224, 236, 255));
             }
@@ -49,7 +57,7 @@ public class VentanaBiblioteca extends JFrame {
 
         // Panel central
         JPanel panelCentral = new JPanel();
-        panelCentral.setLayout(null); // diseño libre
+        panelCentral.setLayout(null);
         panelCentral.setBackground(Color.WHITE);
 
         JLabel fechaHora = new JLabel("12/03/2025 - Hora siempre fija");
@@ -89,7 +97,6 @@ public class VentanaBiblioteca extends JFrame {
             y += 40;
         }
 
-        // Registro (combo)
         JLabel lblRegistro = new JLabel("Registro:");
         lblRegistro.setBounds(x1, y, 140, 20);
         panelCentral.add(lblRegistro);
@@ -98,7 +105,6 @@ public class VentanaBiblioteca extends JFrame {
         cmbRegistro.setBounds(x2, y, ancho, alto);
         panelCentral.add(cmbRegistro);
 
-        // Ocupación (combo)
         JLabel lblOcupacion = new JLabel("Ocupación:");
         lblOcupacion.setBounds(x1 + 370, y, 140, 20);
         panelCentral.add(lblOcupacion);
@@ -107,7 +113,6 @@ public class VentanaBiblioteca extends JFrame {
         cmbOcupacion.setBounds(x2 + 370, y, ancho, alto);
         panelCentral.add(cmbOcupacion);
 
-        // Firma electrónica
         JLabel lblFirma = new JLabel("Firma electrónica:");
         lblFirma.setBounds(x1, y + 40, 140, 20);
         panelCentral.add(lblFirma);
@@ -116,20 +121,36 @@ public class VentanaBiblioteca extends JFrame {
         txtFirma.setBounds(x2, y + 40, ancho, alto);
         panelCentral.add(txtFirma);
 
-        // Botón de registro
         JButton btnRegistro = new JButton("Registro rápido");
         btnRegistro.setBounds(x2 + 140, y + 90, 200, 35);
         btnRegistro.setBackground(new Color(144, 238, 144));
         btnRegistro.setFont(new Font("Segoe UI", Font.BOLD, 16));
         panelCentral.add(btnRegistro);
 
-        // Tabla de registros (solo título visual)
         JLabel lblTabla = new JLabel("TABLA DE REGISTROS");
         lblTabla.setBounds(x2 + 100, y + 140, 300, 30);
         lblTabla.setFont(new Font("Segoe UI", Font.BOLD, 16));
         lblTabla.setForeground(Color.RED);
         panelCentral.add(lblTabla);
 
+        modeloTabla = new DefaultTableModel();
+        modeloTabla.setColumnIdentifiers(
+                new String[] { "ID", "ID Usuario", "ID Libro", "Fecha Préstamo", "Fecha Devolución" });
+        tablaPrestamos = new JTable(modeloTabla);
+        JScrollPane scroll = new JScrollPane(tablaPrestamos);
+        scroll.setBounds(30, y + 180, 800, 200);
+        panelCentral.add(scroll);
+
         add(panelCentral, BorderLayout.CENTER);
+        cargarDatos();
+    }
+
+    private void cargarDatos() {
+        modeloTabla.setRowCount(0);
+        List<Prestamo> prestamos = prestamoDAO.obtenerTodos();
+        for (Prestamo p : prestamos) {
+            modeloTabla.addRow(new Object[] { p.getId(), p.getIdUsuario(), p.getIdLibro(), p.getFechaPrestamo(),
+                    p.getFechaDevolucion() });
+        }
     }
 }

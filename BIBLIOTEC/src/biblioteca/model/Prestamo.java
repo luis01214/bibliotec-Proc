@@ -9,16 +9,7 @@ public class Prestamo {
     private Date fechaPrestamo;
     private Date fechaDevolucion;
 
-    public Prestamo() {
-    }
-
-    public Prestamo(int id, int idUsuario, int idLibro, Date fechaPrestamo, Date fechaDevolucion) {
-        this.id = id;
-        this.idUsuario = idUsuario;
-        this.idLibro = idLibro;
-        this.fechaPrestamo = fechaPrestamo;
-        this.fechaDevolucion = fechaDevolucion;
-    }
+    // Getters y setters
 
     public int getId() {
         return id;
